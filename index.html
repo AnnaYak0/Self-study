@@ -1,0 +1,617 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Self-Study Test · 90 Minutes</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+    :root {
+        --primary: #4a90e2;
+        --secondary: #f39c12;
+        --success: #27ae60;
+        --error: #e74c3c;
+        --bg: #f4f7f6;
+        --text: #2c3e50;
+        --card-bg: #ffffff;
+        --border: #dfe6e9;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Nunito', sans-serif; }
+
+    body {
+        background-color: var(--bg);
+        color: var(--text);
+        padding: 20px 15px;
+        line-height: 1.6;
+        max-width: 800px;
+        margin: 0 auto;
+    }
+
+    /* Header */
+    .header {
+        text-align: center;
+        margin-bottom: 30px;
+        background: white;
+        padding: 25px 15px;
+        border-radius: 20px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        border-top: 5px solid var(--primary);
+        position: sticky;
+        top: 10px;
+        z-index: 100;
+    }
+    .header h1 { font-size: 24px; color: var(--primary); margin-bottom: 10px; line-height: 1.2; }
+    .header .time-badge {
+        display: inline-block;
+        background: var(--secondary);
+        color: white;
+        padding: 5px 15px;
+        border-radius: 20px;
+        font-weight: 800;
+        font-size: 14px;
+        margin-bottom: 10px;
+    }
+    .score-board {
+        font-size: 18px;
+        font-weight: 900;
+        color: var(--success);
+        margin-top: 10px;
+    }
+    .header p { font-size: 15px; font-weight: 600; color: #636e72; }
+
+    /* Task Cards */
+    .task-card {
+        background: var(--card-bg);
+        border-radius: 20px;
+        padding: 25px 20px;
+        margin-bottom: 25px;
+        box-shadow: 0 4px 15px rgba(0,0,0,0.04);
+        border: 1px solid var(--border);
+        position: relative;
+    }
+    .task-header {
+        display: flex;
+        align-items: center;
+        gap: 15px;
+        margin-bottom: 15px;
+        border-bottom: 2px dashed var(--border);
+        padding-bottom: 10px;
+    }
+    .task-num {
+        background: var(--primary);
+        color: white;
+        width: 40px;
+        height: 40px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        border-radius: 12px;
+        font-size: 20px;
+        font-weight: 900;
+        flex-shrink: 0;
+    }
+    .task-title { font-size: 18px; font-weight: 800; line-height: 1.3; }
+
+    .instruction {
+        background: #e3f2fd;
+        color: #1565c0;
+        padding: 15px;
+        border-radius: 12px;
+        font-weight: 700;
+        font-size: 15px;
+        margin-bottom: 20px;
+        border-left: 5px solid var(--primary);
+    }
+
+    /* Interactive Inputs */
+    .exercise-item {
+        margin-bottom: 15px;
+        font-size: 16px;
+        font-weight: 600;
+        padding: 15px;
+        background: #f8f9fa;
+        border-radius: 10px;
+        border: 1px solid var(--border);
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+    }
+    .input-row {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        flex-wrap: wrap;
+    }
+    input[type="text"] {
+        font-family: 'Nunito', sans-serif;
+        font-size: 16px;
+        font-weight: 700;
+        padding: 10px 15px;
+        border-radius: 8px;
+        border: 2px solid var(--border);
+        outline: none;
+        transition: 0.2s;
+        flex: 1;
+        min-width: 150px;
+    }
+    input[type="text"]:focus {
+        border-color: var(--primary);
+        box-shadow: 0 0 8px rgba(74, 144, 226, 0.2);
+    }
+    
+    /* Check Results */
+    input.correct {
+        border-color: var(--success);
+        background-color: #eafaf1;
+        color: var(--success);
+    }
+    input.wrong {
+        border-color: var(--error);
+        background-color: #fdedec;
+        color: var(--error);
+    }
+    
+    .feedback-text {
+        font-size: 14px;
+        font-weight: 800;
+        display: none;
+    }
+    .feedback-text.show { display: block; }
+    .feedback-text.correct-msg { color: var(--success); }
+    .feedback-text.wrong-msg { color: var(--error); }
+
+    /* Buttons */
+    .check-btn {
+        background: var(--primary);
+        color: white;
+        border: none;
+        padding: 12px 25px;
+        border-radius: 10px;
+        font-weight: 900;
+        font-size: 16px;
+        cursor: pointer;
+        transition: 0.2s;
+        width: 100%;
+        margin-top: 10px;
+        box-shadow: 0 4px 0 #2c6aa0;
+    }
+    .check-btn:hover { background: #3a7bc8; }
+    .check-btn:active { transform: translateY(4px); box-shadow: 0 0 0 #2c6aa0; }
+
+    /* Text Reading */
+    .reading-text {
+        background: #fffdf5;
+        padding: 20px;
+        border-radius: 12px;
+        border: 1px solid #ffeaa7;
+        font-size: 16px;
+        line-height: 2.2;
+        margin-bottom: 15px;
+    }
+
+    .footer {
+        text-align: center;
+        color: #b2bec3;
+        font-size: 14px;
+        font-weight: 700;
+        margin-top: 40px;
+        margin-bottom: 20px;
+    }
+    
+    .author-signature {
+        text-align: center;
+        font-style: italic;
+        color: #95a5a6;
+        font-weight: 600;
+        font-size: 14px;
+        margin-top: 15px;
+        margin-bottom: 30px;
+    }
+
+    @media (max-width: 500px) {
+        .header h1 { font-size: 20px; }
+        .task-title { font-size: 16px; }
+        .input-row { flex-direction: column; align-items: stretch; }
+    }
+</style>
+</head>
+<body>
+
+    <div class="header">
+        <h1>Self-Study Test</h1>
+        <div class="time-badge">⏱ 90 Minutes</div>
+        <p>Read the instruction, type your answer in the box, and click "Check". Synonyms are accepted!</p>
+        <div class="score-board">Score: <span id="globalScore">0</span> / 120</div>
+    </div>
+
+    <!-- TASK 1: To Be / Present Simple -->
+    <div class="task-card" id="task1">
+        <div class="task-header">
+            <div class="task-num">1</div>
+            <div class="task-title">Present Simple & To Be</div>
+        </div>
+        <div class="instruction">✍️ Open the brackets and write the correct form of the verb.</div>
+        <div id="ex1-container"></div>
+        <button class="check-btn" onclick="checkTask(1)">Check Task 1</button>
+    </div>
+
+    <!-- TASK 2: Translation (Appearance) -->
+    <div class="task-card" id="task2">
+        <div class="task-header">
+            <div class="task-num">2</div>
+            <div class="task-title">Translation: Appearance</div>
+        </div>
+        <div class="instruction">🇷🇺 Translate the sentences into English. (Contractions like "isn't" and full forms "is not" are both accepted).</div>
+        <div id="ex2-container"></div>
+        <button class="check-btn" onclick="checkTask(2)">Check Task 2</button>
+    </div>
+
+    <!-- TASK 3: Character Adjectives -->
+    <div class="task-card" id="task3">
+        <div class="task-header">
+            <div class="task-num">3</div>
+            <div class="task-title">Character Adjectives</div>
+        </div>
+        <div class="instruction">📝 Read the definition and type the correct character adjective. <br><i>Words to use: kind, shy, hardworking, funny, friendly, smart/clever, quiet, helpful.</i></div>
+        <div id="ex3-container"></div>
+        <button class="check-btn" onclick="checkTask(3)">Check Task 3</button>
+    </div>
+
+    <!-- TASK 4: Reading Text 1 -->
+    <div class="task-card" id="task4">
+        <div class="task-header">
+            <div class="task-num">4</div>
+            <div class="task-title">Reading: Daily Routine</div>
+        </div>
+        <div class="instruction">📖 Read the text and fill in the gaps with the correct form of the verb in brackets.</div>
+        <div class="reading-text" id="ex4-container"></div>
+        <button class="check-btn" onclick="checkTask(4)">Check Task 4</button>
+    </div>
+
+    <!-- TASK 5: Translation (Chores) -->
+    <div class="task-card" id="task5">
+        <div class="task-header">
+            <div class="task-num">5</div>
+            <div class="task-title">Translation: Daily Routine & Chores</div>
+        </div>
+        <div class="instruction">🇷🇺 Translate the sentences into English.</div>
+        <div id="ex5-container"></div>
+        <button class="check-btn" onclick="checkTask(5)">Check Task 5</button>
+    </div>
+
+    <!-- TASK 6: Reading Text 2 -->
+    <div class="task-card" id="task6">
+        <div class="task-header">
+            <div class="task-num">6</div>
+            <div class="task-title">Reading: Family & Character</div>
+        </div>
+        <div class="instruction">📖 Fill in the gaps with the correct form of the verb or the missing adjective (in Russian brackets).</div>
+        <div class="reading-text" id="ex6-container"></div>
+        <button class="check-btn" onclick="checkTask(6)">Check Task 6</button>
+    </div>
+
+    <!-- TASK 7: Spelling -s/-es -->
+    <div class="task-card" id="task7">
+        <div class="task-header">
+            <div class="task-num">7</div>
+            <div class="task-title">Spelling Rules (-s / -es)</div>
+        </div>
+        <div class="instruction">✍️ Write the correct he/she/it form of the verb.</div>
+        <div id="ex7-container"></div>
+        <button class="check-btn" onclick="checkTask(7)">Check Task 7</button>
+    </div>
+
+    <!-- TASK 8: Find the Mistake -->
+    <div class="task-card" id="task8">
+        <div class="task-header">
+            <div class="task-num">8</div>
+            <div class="task-title">Correct the Mistakes</div>
+        </div>
+        <div class="instruction">❌ Each sentence has ONE mistake. Type the corrected sentence in the box.</div>
+        <div id="ex8-container"></div>
+        <button class="check-btn" onclick="checkTask(8)">Check Task 8</button>
+    </div>
+
+    <div class="footer">
+        Finished! Show your screen to the teacher. ✨
+        <div class="author-signature">Author: Yakovleva Anna Alexandrovna</div>
+    </div>
+
+    <script>
+        // DATA FOR TASKS
+        const tasksData = {
+            1: [
+                { q: "My friend ___ (to be) very tall and slim.", a: "is" },
+                { q: "She ___ (to have) long wavy hair.", a: "has" },
+                { q: "They ___ (not / to wear) glasses.", a: "don't wear|do not wear" },
+                { q: "___ (He / to have) a beard?", a: "does he have" },
+                { q: "My parents ___ (to be) very kind and friendly.", a: "are" },
+                { q: "I ___ (to be) 16 years old.", a: "am" },
+                { q: "He ___ (not / to do) his homework.", a: "doesn't do|does not do" },
+                { q: "We ___ (to go) to college every day.", a: "go" },
+                { q: "It ___ (not / to be) cold today.", a: "isn't|is not" },
+                { q: "My mother ___ (to cook) dinner.", a: "cooks" },
+                { q: "___ (you / to have) a pet?", a: "do you have" },
+                { q: "Where ___ (you / to live)?", a: "do you live" },
+                { q: "My father ___ (not / to watch) TV.", a: "doesn't watch|does not watch" },
+                { q: "Sarah ___ (to brush) her teeth in the morning.", a: "brushes" },
+                { q: "My brother ___ (to be) tall.", a: "is" }
+            ],
+            2: [
+                { q: "У неё длинные волнистые волосы.", a: "she has long wavy hair|she has got long wavy hair" },
+                { q: "Он высокий и стройный.", a: "he is tall and slim" },
+                { q: "Мой брат очень смешной.", a: "my brother is very funny" },
+                { q: "Она носит очки.", a: "she wears glasses" },
+                { q: "У него есть борода и усы.", a: "he has a beard and a moustache|he has got a beard and a moustache" },
+                { q: "Они очень добрые и дружелюбные.", a: "they are very kind and friendly" },
+                { q: "Я не высокий.", a: "i am not tall|i'm not tall" },
+                { q: "Она не носит очки.", a: "she does not wear glasses|she doesn't wear glasses" },
+                { q: "У тебя есть веснушки?", a: "do you have freckles|have you got freckles" },
+                { q: "Мой дедушка старый.", a: "my grandfather is old" },
+                { q: "Она очень застенчивая.", a: "she is very shy" },
+                { q: "Он умный и трудолюбивый.", a: "he is smart and hardworking|he is clever and hardworking" },
+                { q: "У меня короткие тёмные волосы.", a: "i have short dark hair|i have got short dark hair|i've got short dark hair" },
+                { q: "Она смешная.", a: "she is funny" },
+                { q: "Он добрый.", a: "he is kind" }
+            ],
+            3: [
+                { q: "He always helps people. He is very ___.", a: "kind|helpful" },
+                { q: "She doesn't like talking to new people. She is ___.", a: "shy|quiet" },
+                { q: "He works very hard. He is ___.", a: "hardworking" },
+                { q: "She makes everyone laugh. She is ___.", a: "funny" },
+                { q: "He studies a lot and gets good marks. He is ___.", a: "smart|clever" },
+                { q: "They are always happy to see me. They are ___.", a: "friendly|nice" },
+                { q: "She is quiet and doesn't say much. She is ___.", a: "quiet|shy" },
+                { q: "He is always ready to help his mom. He is ___.", a: "helpful|kind" },
+                { q: "She is a very good and pleasant person. She is ___.", a: "nice|kind" },
+                { q: "He is very intelligent. He is ___.", a: "smart|clever" },
+                { q: "She always says 'hello' and smiles. She is ___.", a: "friendly|nice" },
+                { q: "He doesn't talk much. He is ___.", a: "quiet|shy" },
+                { q: "She is always there for her friends. She is ___.", a: "helpful|kind" },
+                { q: "He is a very good student. He is ___.", a: "smart|hardworking|clever" },
+                { q: "She loves to help her friends. She is ___.", a: "kind|helpful" }
+            ],
+            4: [
+                { q: "My name ___ Alex.", a: "is" },
+                { q: "I ___ 16 years old.", a: "am" },
+                { q: "I am a ___. (студент)", a: "student" },
+                { q: "I wake up ___ 7 am. (предлог)", a: "at" },
+                { q: "My mother ___ (to cook) breakfast.", a: "cooks" },
+                { q: "I ___ (not / to like) waking up early.", a: "don't like|do not like" },
+                { q: "My father ___ (to work) in an office.", a: "works" },
+                { q: "He ___ (to have) a beard.", a: "has" },
+                { q: "He ___ (to be) tall.", a: "is" },
+                { q: "I have a sister. She ___ (to be) 10.", a: "is" },
+                { q: "She ___ (to like) playing games.", a: "likes" },
+                { q: "We ___ (to have) a dog.", a: "have" },
+                { q: "I ___ (to walk) the dog every evening.", a: "walk" },
+                { q: "I ___ (not / to like) washing the dishes.", a: "don't like|do not like" },
+                { q: "But I ___ (to make) my bed every morning.", a: "make" }
+            ],
+            5: [
+                { q: "Я встаю в 7 утра.", a: "i wake up at 7 am|i get up at 7 am|i wake up at seven|i get up at seven" },
+                { q: "Она завтракает каждый день.", a: "she has breakfast every day|she eats breakfast every day" },
+                { q: "Мы идем в колледж.", a: "we go to college|we go to school" },
+                { q: "Он не любит мыть посуду.", a: "he does not like washing the dishes|he doesn't like washing the dishes|he doesn't like doing the washing up|he does not like to wash the dishes" },
+                { q: "Моя мама готовит ужин.", a: "my mother cooks dinner|my mum cooks dinner" },
+                { q: "Они гуляют с собакой вечером.", a: "they walk the dog in the evening|they walk the dog in the evenings" },
+                { q: "Ты убираешь свою комнату?", a: "do you tidy up your room|do you clean your room" },
+                { q: "Я всегда заправляю кровать.", a: "i always make my bed" },
+                { q: "Мой папа выносит мусор.", a: "my father takes out the rubbish|my dad takes out the rubbish|my father takes the rubbish out|my dad takes the rubbish out" },
+                { q: "Она не стирает одежду.", a: "she does not do the laundry|she doesn't do the laundry|she doesn't wash clothes|she does not wash clothes" },
+                { q: "Мы смотрим телевизор вечером.", a: "we watch tv in the evening" },
+                { q: "Я ложусь спать в 11.", a: "i go to bed at 11|i go to bed at eleven" },
+                { q: "Он делает домашнее задание.", a: "he does his homework" },
+                { q: "Мои родители ходят в магазин по субботам.", a: "my parents go shopping on saturdays|my parents do the shopping on saturdays" },
+                { q: "Она поливает цветы.", a: "she waters the plants|she waters the flowers" }
+            ],
+            6: [
+                { q: "My best friend ___ (to be) Sarah.", a: "is" },
+                { q: "She ___ (to be) 17.", a: "is" },
+                { q: "She ___ (to have) short curly hair and green eyes.", a: "has" },
+                { q: "She ___ (to wear) glasses.", a: "wears" },
+                { q: "She ___ (to be) very smart and ___ (добрая).", type: "double", a1: "is", a2: "kind" },
+                { q: "She ___ (not / to like) sports.", a: "doesn't like|does not like" },
+                { q: "But she ___ (to love) reading books.", a: "loves" },
+                { q: "She ___ (to have) two brothers.", a: "has" },
+                { q: "They ___ (to be) very ___ (смешные).", type: "double", a1: "are", a2: "funny" },
+                { q: "Her parents ___ (to be) doctors.", a: "are" },
+                { q: "They ___ (to work) in a hospital.", a: "work" },
+                { q: "Sarah ___ (to help) her mother with chores.", a: "helps" },
+                { q: "She ___ (to wash) the dishes every evening.", a: "washes" },
+                { q: "Her brothers ___ (not / to help) at home.", a: "don't help|do not help" },
+                { q: "Sarah ___ (to be) a very good girl.", a: "is" }
+            ],
+            7: [
+                { q: "watch ->", a: "watches" },
+                { q: "play ->", a: "plays" },
+                { q: "study ->", a: "studies" },
+                { q: "do ->", a: "does" },
+                { q: "have ->", a: "has" },
+                { q: "go ->", a: "goes" },
+                { q: "fly ->", a: "flies" },
+                { q: "wash ->", a: "washes" },
+                { q: "read ->", a: "reads" },
+                { q: "live ->", a: "lives" },
+                { q: "miss ->", a: "misses" },
+                { q: "mix ->", a: "mixes" },
+                { q: "carry ->", a: "carries" },
+                { q: "say ->", a: "says" },
+                { q: "catch ->", a: "catches" }
+            ],
+            8: [
+                { q: "She have long hair.", a: "she has long hair" },
+                { q: "They is from Russia.", a: "they are from russia" },
+                { q: "He don't like tea.", a: "he doesn't like tea|he does not like tea" },
+                { q: "Do she wear glasses?", a: "does she wear glasses" },
+                { q: "I has a dog.", a: "i have a dog" },
+                { q: "My brother are tall.", a: "my brother is tall" },
+                { q: "He go to school every day.", a: "he goes to school every day" },
+                { q: "They doesn't play football.", a: "they don't play football|they do not play football" },
+                { q: "Does you have a pen?", a: "do you have a pen" },
+                { q: "My parents is at work.", a: "my parents are at work" },
+                { q: "I am not cook dinner.", a: "i do not cook dinner|i don't cook dinner" },
+                { q: "Is he play games?", a: "does he play games" },
+                { q: "She study at college.", a: "she studies at college" },
+                { q: "We isn't from Spain.", a: "we aren't from spain|we are not from spain" },
+                { q: "He have a beard.", a: "he has a beard" }
+            ]
+        };
+
+        let totalScore = 0;
+        const maxScore = 120;
+
+        // Initialization of the interface
+        function init() {
+            for (let taskId = 1; taskId <= 8; taskId++) {
+                const container = document.getElementById(`ex${taskId}-container`);
+                if (!container) continue;
+
+                tasksData[taskId].forEach((item, index) => {
+                    const div = document.createElement('div');
+                    div.className = 'exercise-item';
+                    
+                    const p = document.createElement('div');
+                    p.innerHTML = `${index + 1}. ${item.q}`;
+                    div.appendChild(p);
+
+                    const inputRow = document.createElement('div');
+                    inputRow.className = 'input-row';
+
+                    if (item.type === 'double') {
+                        const in1 = document.createElement('input');
+                        in1.type = 'text';
+                        in1.placeholder = 'verb';
+                        in1.dataset.answer1 = item.a1;
+                        in1.dataset.task = taskId;
+                        
+                        const in2 = document.createElement('input');
+                        in2.type = 'text';
+                        in2.placeholder = 'adjective';
+                        in2.dataset.answer2 = item.a2;
+                        in2.dataset.task = taskId;
+
+                        inputRow.appendChild(in1);
+                        inputRow.appendChild(in2);
+                    } else {
+                        const inp = document.createElement('input');
+                        inp.type = 'text';
+                        inp.placeholder = 'Type answer...';
+                        inp.dataset.answer = item.a;
+                        inp.dataset.task = taskId;
+                        inputRow.appendChild(inp);
+                    }
+
+                    const feedback = document.createElement('div');
+                    feedback.className = 'feedback-text';
+                    
+                    div.appendChild(inputRow);
+                    div.appendChild(feedback);
+                    container.appendChild(div);
+                });
+            }
+        }
+
+        // Normalization function (removes punctuation, extra spaces, lowercases)
+        function normalize(str) {
+            if (!str) return "";
+            return str.toLowerCase().trim()
+                .replace(/[.,!?;:'"()]/g, '')
+                .replace(/\s+/g, ' ');
+        }
+
+        // Check function for specific task
+        function checkTask(taskId) {
+            const inputs = document.querySelectorAll(`input[data-task="${taskId}"]`);
+            let correctCount = 0;
+            let totalInTask = 0;
+
+            inputs.forEach(input => {
+                totalInTask++;
+                const feedback = input.closest('.exercise-item').querySelector('.feedback-text');
+                
+                let isCorrect = false;
+
+                if (input.dataset.answer1 && input.dataset.answer2) {
+                    // Double input logic
+                    const val1 = normalize(input.value);
+                    const val2 = normalize(input.nextElementSibling.value);
+                    const ans1 = normalize(input.dataset.answer1);
+                    const ans2 = normalize(input.dataset.answer2);
+                    
+                    if (val1 === ans1 && val2 === ans2) {
+                        isCorrect = true;
+                    }
+                    // Mark visuals
+                    input.classList.remove('correct', 'wrong');
+                    input.nextElementSibling.classList.remove('correct', 'wrong');
+                    
+                    if (isCorrect) {
+                        input.classList.add('correct');
+                        input.nextElementSibling.classList.add('correct');
+                    } else {
+                        if(val1 !== ans1) input.classList.add('wrong');
+                        if(val2 !== ans2) input.nextElementSibling.classList.add('wrong');
+                    }
+
+                } else {
+                    // Single input logic
+                    const userVal = normalize(input.value);
+                    const answers = input.dataset.answer.split('|').map(normalize);
+                    
+                    if (answers.includes(userVal)) {
+                        isCorrect = true;
+                    }
+                    
+                    input.classList.remove('correct', 'wrong');
+                    if (isCorrect) input.classList.add('correct');
+                    else input.classList.add('wrong');
+                }
+
+                if (isCorrect) {
+                    correctCount++;
+                    if(feedback) {
+                        feedback.innerText = "✓ Correct!";
+                        feedback.className = "feedback-text show correct-msg";
+                    }
+                } else {
+                    if(feedback) {
+                        feedback.innerText = "✗ Review your answer.";
+                        feedback.className = "feedback-text show wrong-msg";
+                    }
+                }
+            });
+
+            // Update global score (recalculate all tasks to be safe)
+            recalculateGlobalScore();
+            alert(`Task ${taskId} Checked!\nCorrect in this task: ${correctCount} / ${totalInTask}`);
+        }
+
+        function recalculateGlobalScore() {
+            let score = 0;
+            const allInputs = document.querySelectorAll('input[data-task]');
+            
+            allInputs.forEach(input => {
+                if (input.classList.contains('correct')) {
+                    if (input.dataset.answer1) {
+                        score += 0.5; // count half for double inputs
+                    } else {
+                        score += 1;
+                    }
+                } else if (input.nextElementSibling && input.nextElementSibling.classList.contains('correct')) {
+                    // for the second input of a double
+                    score += 0.5; 
+                }
+            });
+            
+            // Round up because of double inputs
+            document.getElementById('globalScore').innerText = Math.round(score);
+        }
+
+        // Run initialization
+        init();
+
+    </script>
+</body>
+</html>
